@@ -1,17 +1,15 @@
 // TODO: Fix JSoup dependency, might've messed it up
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * @author Odie
@@ -28,9 +26,10 @@ public class tracker {
     private double price; // Current price of item
     private String endTime; // Time until bidding is over
     private ZonedDateTime fEndTime; // Time until bidding is over as ZonedDateTime object
+    private Duration secUntil;
     private boolean isOver; // True if auction is over
 
-    DateTimeFormatter timeF = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss a z");
+    DateTimeFormatter gwTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a z");
 
     // -- CONSTRUCTORS --
     // Default constructor for an auction object
@@ -98,8 +97,7 @@ public class tracker {
             Element input = doc.getElementById("end-time");
             // Read value of end-time and put this value in endTime string
             endTime = input.attr("value") + " PST";
-            // TODO: This shit mega broken, I'll fix it later
-            //fEndTime = ZonedDateTime.parse(endTime, timeF);
+            fEndTime = ZonedDateTime.parse(endTime, gwTimeFormat);
         }
         // - Unknown site
         else{
@@ -108,5 +106,10 @@ public class tracker {
         }
 
         this.endTime = endTime;
+    }
+
+    // Sets countdown timer using ZonedDateTime filled in readSite
+    public void setTimer () {
+
     }
 }

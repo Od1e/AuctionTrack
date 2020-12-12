@@ -12,7 +12,7 @@ public class trackerTest {
         System.out.println(test.getSite());
         System.out.println(test.getName());
         System.out.println(test.getUfendTime());
-        //System.out.println(test.getfEndTime());
+        System.out.println(test.getfEndTime());
     }
 
 }
