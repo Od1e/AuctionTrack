@@ -2,6 +2,7 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -9,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -25,9 +27,10 @@ public class tracker {
     private String name; // Name of item
     private double price; // Current price of item
     private String endTime; // Time until bidding is over
+    private ZonedDateTime fEndTime; // Time until bidding is over as ZonedDateTime object
     private boolean isOver; // True if auction is over
 
-    DateFormat timeF = new SimpleDateFormat("yyyy-MM-dd");
+    DateTimeFormatter timeF = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss a z");
 
     // -- CONSTRUCTORS --
     // Default constructor for an auction object
@@ -41,9 +44,20 @@ public class tracker {
     public String getSite () {
         return site;
     }
+
+    // Returns product name
+    public String getName () {
+        return name;
+    }
+
     // Return unformatted endTime
     public String getUfendTime () {
         return endTime;
+    }
+
+    // Return formatted time as object
+    public ZonedDateTime getfEndTime () {
+        return fEndTime;
     }
 
     // -- MUTATORS --
@@ -76,10 +90,16 @@ public class tracker {
         }
         // - Shopgoodwill
         else if (site.equals("shopgoodwill")){
+            // Get h1 element with class "product-title"
+            Elements title = doc.getElementsByClass("product-title");
+            name = title.first().text();
+
             // Get input element with ID "end-time"
             Element input = doc.getElementById("end-time");
             // Read value of end-time and put this value in endTime string
-            endTime = input.attr("value");
+            endTime = input.attr("value") + " PST";
+            // TODO: This shit mega broken, I'll fix it later
+            //fEndTime = ZonedDateTime.parse(endTime, timeF);
         }
         // - Unknown site
         else{
