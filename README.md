@@ -1,2 +1,2 @@
 # Auction Track
-## A simple auction tracker
+A simple auction tracker
