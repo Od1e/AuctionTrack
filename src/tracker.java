@@ -1,3 +1,4 @@
+// TODO: Fix JSoup dependency, might've messed it up
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +24,7 @@ public class tracker {
     private String site; // Website being used
     private String name; // Name of item
     private double price; // Current price of item
-    private ZonedDateTime endTime; // Time until bidding is over
+    private String endTime; // Time until bidding is over
     private boolean isOver; // True if auction is over
 
     DateFormat timeF = new SimpleDateFormat("yyyy-MM-dd");
@@ -36,12 +37,22 @@ public class tracker {
     }
 
     // -- ACCESSORS --
+    // Returns site
+    public String getSite () {
+        return site;
+    }
+    // Return unformatted endTime
+    public String getUfendTime () {
+        return endTime;
+    }
 
     // -- MUTATORS --
     // Reads input url and fills in instance variables
     public void readSite (String link) throws IOException {
         String urlAsString = link.toLowerCase();
         String endTime;
+        // Assign whatever site is input to site string
+        // TODO: Potentially combine this with the if-statement underneath
         if (urlAsString.contains("ebay")){
             site = "ebay";
         }
@@ -54,22 +65,28 @@ public class tracker {
             site = "None";
         }
 
+        // Query input url and download html
         Document doc = Jsoup.connect(link).get();
 
+        // Splitting up different sites in an if-statement since they're all written differently
+        // - Ebay
         if (site.equals("ebay")){
-            // TODO
+            // TODO: Create JSoup read template for Ebay
             endTime = "";
         }
+        // - Shopgoodwill
         else if (site.equals("shopgoodwill")){
+            // Get input element with ID "end-time"
             Element input = doc.getElementById("end-time");
+            // Read value of end-time and put this value in endTime string
             endTime = input.attr("value");
         }
+        // - Unknown site
         else{
-            // TODO
+            // TODO: Create some sort of fallback
             endTime = "None";
         }
 
-        this.endTime = ZonedDateTime.parse(endTime);
-        System.out.println(this.endTime);
+        this.endTime = endTime;
     }
 }
